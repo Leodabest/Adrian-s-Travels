@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family National Parks Guide</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    nav { background: #4CAF50; color: white; padding: 1em; text-align: center; }
+    nav a { color: white; margin: 0 1em; text-decoration: none; font-weight: bold; }
+    .content { padding: 2em; display: none; }
+    h1 { color: #4CAF50; }
+    textarea { width: 100%; height: 300px; }
+    img { max-width: 100%; height: auto; margin-bottom: 20px; }
+    #view-itinerary p { white-space: pre-line; background: #f4f4f4; padding: 1em; border: 1px solid #ccc; }
+    #passcode { margin-top: 10px; }
+    iframe { width: 100%; max-width: 800px; height: 600px; border: 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" onclick="showPage('view-itinerary')">Itinerary</a>
+    <a href="#" onclick="showPage('maps')">Park Maps</a>
+    <a href="#" onclick="showPage('edit-itinerary')">Edit Itinerary</a>
+    <a href="#" onclick="showPage('texas-map')">Texas Map</a>
+  </nav>
+
+  <div class="content" id="view-itinerary" style="display:block">
+    <h1>Trip Itinerary</h1>
+    <p id="itinerary-text"></p>
+  </div>
+
+  <div class="content" id="edit-itinerary">
+    <h1>Edit Itinerary</h1>
+    <p>Enter passcode to edit:</p>
+    <input type="password" id="passcode">
+    <button onclick="checkPasscode()">Submit</button>
+    <div id="edit-section" style="display:none">
+      <p>Update your itinerary:</p>
+      <textarea id="itinerary-input"></textarea>
+      <button onclick="saveItinerary()">Save</button>
+    </div>
+  </div>
+
+  <div class="content" id="maps">
+    <h1>National Park Maps</h1>
+    <p>Click or zoom in on each map to view more details. These are stored locally for offline use.</p>
+    <img src="maps/yosemite.jpg" alt="Yosemite Map">
+    <img src="maps/yellowstone.jpg" alt="Yellowstone Map">
+    <img src="maps/grandcanyon.jpg" alt="Grand Canyon Map">
+    <!-- Add more maps as needed -->
+  </div>
+
+  <div class="content" id="texas-map">
+    <h1>Texas Map</h1>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14047082.228048969!2d-110.68243658418726!3d30.73348135947603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas!5e0!3m2!1sen!2sus!4v1744399305354!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+
+  <script>
+    function showPage(page) {
+      document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+      document.getElementById(page).style.display = 'block';
+      if (page === 'view-itinerary') {
+        loadItinerary();
+      }
+    }
+
+    function checkPasscode() {
+      const pass = document.getElementById('passcode').value;
+      if (pass === '1234') {
+        document.getElementById('edit-section').style.display = 'block';
+        document.getElementById('itinerary-input').value = localStorage.getItem('itinerary') || '';
+      } else {
+        alert('Incorrect passcode');
+      }
+    }
+
+    function saveItinerary() {
+      const updatedText = document.getElementById('itinerary-input').value;
+      localStorage.setItem('itinerary', updatedText);
+      document.getElementById('itinerary-text').innerText = updatedText;
+      alert('Itinerary updated!');
+      showPage('view-itinerary');
+    }
+
+    function loadItinerary() {
+      const saved = localStorage.getItem('itinerary');
+      document.getElementById('itinerary-text').innerText = saved || 'No itinerary saved yet.';
+    }
+
+    // Load itinerary on first page load
+    window.onload = loadItinerary;
+  </script>
+</body>
+</html>
